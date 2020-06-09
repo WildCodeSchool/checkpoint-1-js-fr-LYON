@@ -88,6 +88,47 @@ Une autre utilisation consiste à installer des logiciels externes en faisant ce
 ```
 sudo apt install <package_name>
 ```
+--------------------------------------
+
+## SCRUM
+
+### 1. Reccueillir les besoins d'un client :
+
+Les besoins d'un clients sont matérialisées via une maquette du projet. Elle sert à avoir un support visible sur lequel discuter. Le maquette devra être validée par le client avant de pouvoir commencer à travailler dessus.
+
+### 2. Rédiger un compte-rendu de réunion :
+
+Le compte-rendu de réunion se fait sur un document éditable en plusieurs exemplaires et qui peut être envoyé par mail au client. Il y ait d'abord mentionné la date et les participants à cette réunion. Ce compte-rendu reprend tout ce qui a été abordé durant la réunion.
+
+### 3. Les différents rituels scrum :
+
+#### a) Le daily stand up
+
+Il est effectué tous les matins sur le lieu de travail.
+
+Le daily stand up sert à parler des objectifs réalisés la veille, ce qui est prévu durant la journée qui va suivre et à donner son humeur du moment.
+
+Le daily stand up ne doit pas dépasser 15 min. On ne doit pas résoudre les problèmes durant ce temps.
+
+#### b) Le sprint backlog
+
+Il est effectué à chaque fin de sprint pour préparer le sprint suivant. On y sélectionne les User Stories (US) qui seront effectuées pendant le sprint suivant. On attribue une estimation de difficulté par US et les personnes qui vont travailler dessus.
+
+#### c) Le sprint review
+
+La sprint review du Scrum a pour but de présenter le produit le travail réalisé durant le Sprint en cours. On y présentera également l’état d’avancement du produit réalisé par rapport au produit imaginé.
+
+#### d) La rétrospective
+
+Cela permet de pointer les points positifs et négatifs du sprint passé.
+
+### 3. Rédiger un product backlog
+
+Le Product Backlog (PB) permet de référencer toutes les user stories (US). Des conditions de test et d'acceptations permettent de valider la fonctionnalité.
+
+### 4. Donner une estimation du temps de dévelloppement d'une user stories (US)
+
+Le temps de dévelooppement est déterminé en effectuant un planning poker où, chaque développeur va devoir estimer un niveau de difficulté pour la réalisation de cette US. Une discution est effectuée entre chaque développeur afin de déterminer la difficulté réel et comment ils envisagent d'effectuer cette US.
 
 --------------------------------------
 
@@ -128,16 +169,16 @@ Il faut veiller à bien commenter nos commits afin de comprendre ce qui a été 
 
 Pour structurer une page avec cette sémantique, HTML fournit des balises dédiées :
 
-| Balises | sémantique |
-| :-----: | :--------: |
-| ```<header>``` | en-tête |
-| ```<nav>``` | barre de navigation |
-| ```<main>``` | contenu principal |
-| ```<article>``` | élément contenu dans ```<main>``` |
-| ```<section>``` | élément contenu dans ```<main>``` |
-| ```<div>``` | élément contenu dans ```<main>``` |
-| ```<aside>``` | barre latérale |
-| ```<footer>``` | pied de page |
+| Balises             | sémantique                        |
+| :-----------------: | :-------------------------------: |
+| ```<header>```      | en-tête                           |
+| ```<nav>```         | barre de navigation               |
+| ```<main>```        | contenu principal                 |
+| ```<article>```     | élément contenu dans ```<main>``` |
+| ```<section>```     | élément contenu dans ```<main>``` |
+| ```<div>```         | élément contenu dans ```<main>``` |
+| ```<aside>```       | barre latérale                    |
+| ```<footer>```      | pied de page                      |
 
 ### 2. Utiliser un framework CSS (Bootstrap, MaterializeCSS, ...)
 
@@ -394,10 +435,66 @@ On peut créer des balises (composants) dans un fichier externe au fichier App.j
 
 Grâce au JSX, on peut insérer des balises HTML au sein du js.
 
+On peut implanter des expressions JS dans les balises de JSX à l'aide des accolades {} :
+```javascript
+const randomFood = () => {
+ const index = Math.floor(3 * Math.random());
+ const foods = ['beer', 'burgers', 'pizza'];
+ return foods[index];
+}
+
+const App = () => {
+ return (
+   <div>
+     <p>Homer eats {7 * 12} donuts/week.</p>
+     <p>He also likes {randomFood()}!</p>
+   </div>
+ )
+};
+
+```
+
+ATTENTION ! ON NE PEUT METTRE QUE DES INSTRUCTIONS ENTRE LES ACCOLADES. LES EXPRESSIONS RENVOIENT DES ERREURS.
+
+Exemple : 
+```javascript
+const DonutPreferences = ({ likesDonuts }) => (
+ <div>
+   {
+     if (likesDonuts) {
+       return "I like donuts";
+     } else {
+       return "I don't care about donuts"
+     }
+   }
+ </div>
+)
+```
+Cette expression ne va pas fonctionner. Il faut d'abord créer une fonction avec cette condition. Puis on l'appelle dans les {}.
+
+
 ### 2. Savoir implanter un routing
 
 Le routing permet de simuler un changement de page sur l'appli internet. 
+```javascript
+// index.js
+import { React, BrowerRouter } from "react-router-dom";
 
+ReactDOM.render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+  document.getElementById('root')
+);
+```
+
+On commence par importer les composants nécessaire au routage :
+```javascript
+// App.jsx
+import { Switch, Route } from 'react-router-dom';
+```
+
+Ensuite, on déclare l'ensemble de nos routes dans le "render" du composant :
 ```javascript
 class App extends React.Component {
   render () {
@@ -417,11 +514,89 @@ class App extends React.Component {
 ```
 Le _exact_ sert à éviter que le chemin confonde avec un autre chemin.
 
+Pour pouvoir communiquer entre les composants, nous allons devoir utiliser un autre composant : **Link**.
+
+Link : https://reacttraining.com/react-router/web/api/Link
+
+```javascript
+// Header.jsx
+import { Link } from 'react-router-dom';
+```
+Ensuite, on appelle notre composant sur chaque élément de notre menu de navigation :
+```javascript
+// Header.jsx
+<ul className="Header">
+  <li><Link to="/">Home</link></li>
+  <li><Link to="/page1">page1</link></li>
+  <li><Link to="/page2">page2</link></li>
+</ul>
+```
+
+Pour aller plus loin, on peut utiliser **NavLink** pour customiser les liens, ajouter des classes, etc ... Pour cela, on a juste à remplacer tous les "Link" par "NavLink".
+pour plus d'info : https://reacttraining.com/react-router/core/api/Router
+
 ### 3. Communiquer entre les Composants (props, event emits ...)
 
 1) Les Props
 
 Les props servent à modifier dynamiquement, lors de l'appel du composant, les différentes clés du composant. Ainsi, en ayant créé une fois le composant, on peut l'appeler autant de fois que nécessaire en modifiant les valeurs des clés manuellement.
+Les props permettent le passage d'informations d'un composant "parent" à un composant "enfant" et **UNIQUEMENT** dans ce sens.
+
+Exemple :
+
+*composant enfant :*
+
+```javascript
+const homer = {
+ name: 'Homer',
+ avatar: '/img/homer.jpg',
+ address: {
+   street: '742 Evergreen Terrace',
+   city: 'Springfield'
+ },
+ shout: () => alert("D'oh!")
+};
+const App = () => (
+ <UserDetails user={homer} />
+);
+```
+*composant parent :*
+```javascript
+const UserDetails = props => (
+ <div>
+   <h3>{props.user.name}</h3>
+   <img src={props.user.avatar} />
+   <p>
+     {props.user.address.street},
+     {props.user.address.city}
+   </p>
+   <button onClick={props.user.shout}>
+     Make {props.user.name} shout
+   </button>
+ </div>
+);
+```
+On appelle les clé de l'objet situé dans le composant enfant depuis le composant parent.
+
+On peut utiliser le spread operator pour passer toutes les propriétés d'un objet comme props distinctes
+```javascript
+const article = {
+ title: 'Panic in Springfield',
+ text: 'Homer blew the nuclear plant'
+};
+const App = () => (
+ <Article {...article } read />
+);
+```
+*composant parent :*
+```javascript
+const Article = ({ title, text }) => (
+ <div>
+   <h2>{title}</h2>
+   <p>{text}</p>
+ </div>
+);
+```
 
 2) event
 
@@ -436,10 +611,128 @@ Les event permettent à l'utilisateur d'intéragir avec le site.
 ### 4. Utiliser l'affichage conditionnel en JSX
 
 On peut faire un affichage conditionnel via un opérateur ternaire :
-valeur à vérifier ? Validation : Annulation.
+
+**valeur à vérifier ? Validation : Annulation.**
 
 On peut aussi utiliser les if, if...else, if...else if, etc...
+
+Un autre type de rendu conditionnel permet de vérifier si une valeur est vrai avec un seul retour possible. On utilise pour cela l'opérateur **&&** :
+
+Exemple :
+```javascript
+const hasError = () => Math.random() > 0.5;
+
+const App = () => {
+ return (
+   <div>
+     {
+       hasError() && (
+         <div className="alert">
+           Something went wrong :/
+         </div>
+       )
+     }
+   </div>
+ )
+};
+```
+La fonction ```hasError()``` est vérifiée. Si elle est vraie, ce qui suit le && est affiché. Sinon, c'est ignoré.
+
 
 ### 5. Afficher une liste de composants avec map
 
 map permet de filtrer un tableau ou un objet et d'en lister les composants si on les sort dans une liste à puce via ```<li>```
+
+### 6. Le State
+
+1. Contexte :
+
+Dès lors qu'il y a une interface utilisateur, il doit y avoir un State. Le state sert à synchroniser les données qu'elle manipule et à synchroniser l'affichage.
+
+La ou les props sont en lecture seule, le state agit sur le composant. C'est l'état du composant, on y stocke des données qui peuvent varier. 
+Un composant peut disposer de props **ET** d'un state.
+
+2. Initialisation du state :
+
+Le state est un **objet** qu'on initialise dans le constructeur d'une classe. Chaque instance d'un composant a son propre state.
+
+```javascript
+import React from 'react';
+class Counter extends React.Component {
+ constructor(props) {
+   super(props);
+   this.state = {
+	count: 0
+   };
+ }
+}
+export default Counter;
+```
+> Ici, le state est initialisé avec un seul attribut _count_ à zéro.
+
+3. Modification du state 
+
+```javascript
+class Counter extends React.Component {
+ constructor(props) {
+   super(props);
+   this.state = {count: 0};
+   this.increment = this.increment.bind(this);
+ }
+ increment() {
+   const count = this.state.count;
+   this.setState({ count: count + 1 });
+ }
+ render() {
+   const count = this.state.count;
+   return (
+     <button onClick={this.increment}>
+       {count}
+     </button>
+   );
+ }
+}
+export default Counter;
+```
+> On doit appeler la méthode **setState** fournie par la classe _Component_ pour modifier le state.
+
+4. Immutabilité du state
+
+Il est impossible de modifier **this.state** directement, ni un de ses attributs. Il faut bien faire attention à ce qu'on veut comme valeur initiale lors de l'initialisation du state.
+
+> Dans cet exemple, il serait impossible d'écrire _this.state.count += 1_.
+
+---
+
+## Méthodologie Agile : Scrum 
+
+La méthode scrum permet de rendre plus souple la gestion d'un projet. Cette méthode est ponctuée de rituel afin de faire en sorte que le projet avance tout en tenant informé le client.
+
+Doc Scrum : https://www.scrumguides.org/docs/scrumguide/v2017/2017-Scrum-Guide-French.pdf
+
+Les trois piliers du SCRUM :
+
+- Transparence : Scrum met l'accent sur le fait d'avoir un langage commun entre l'équipe et le management. Ce langage commun doit permettre à tout observateur d'obtenir rapidement une bonne compréhension du projet.
+
+
+- Inspection : À intervalle régulier, Scrum propose de faire le point sur les différents artéfacts produits, afin de détecter toute variation indésirable.
+Ces inspections ne doivent pas être faites trop fréquemment, ou par un inspecteur mal formé : cela nuirait à l'avancement du projet.
+
+- Adaptation : Si une dérive est constatée pendant l'inspection, le processus doit alors être adapté. Scrum fournit des évènements, durant lesquels cette adaptation est possible. Il s'agit de la réunion de planification de sprint, de la mêlée quotidienne, de la revue de sprint ainsi que de la rétrospective de sprint.
+
+Cette méthodologie répartie 3 rôles au sein d'une équipe de développeur :
+
+Scrum Master                                            | Product Owner                               | Team Member
+:-----------------------------------------------------: | :-----------------------------------------: | :----------------------------------------------------:
+Assure du respect des principes et des valeurs du Scrum | Crée le Product Backlog                     | Transforme les besoins en fonctionnalités exploitables
+Facilite la communication à l’intérieur de l’équipe     | Sélectionne le Sprint Backlog               | Effectue les tests unitaires
+Définit la vélocité                                     | Crée et met à jour les priorisations des US | Estime les US
+Fait réaliser les estimations des User Stories (US)     | Accepte ou refuse les US réalisées          | Divise les US en tâches
+
+Product Backlog : Liste l'ensemble des fonctionnalités appelées _user stories_. Plus une user stories a de la valeur, plus elle sera précise.
+
+user stories : Une user story est une demande fonctionnelle basée sur l’un ou les utilisateurs clés du produit qui va rajouter de la valeur business au produit. Elle sera écrite dans un langage naturel compris par l’ensemble des acteurs du projet ou liés à celui-ci.
+
+sprint : Il s'agit d'un temps accordé pour la réalisation d'un certain nombre de User Stories.
+
+Vélocité : La vélocité est un indicateur utilisé sur des projets gérés à l'aide d'une méthode agile, comme Scrum par exemple. La vélocité agile permet de déterminer l'effort qu'est capable de fournir une équipe de développement pour la réalisation des tâches programmées dans un sprint. Elle est exprimée en nombre de points.
