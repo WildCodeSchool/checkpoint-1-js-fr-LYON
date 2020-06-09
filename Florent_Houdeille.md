@@ -150,15 +150,13 @@ Il faut faire des merges réguliers afin d'éviter d'avoir à apporter trop de m
 
 ### 3. Savoir utiliser les tags de Git
 
-////////////////////////////////////////////////////////////////
-|ouaf | miam |
-| :--------- | -------------: |
-| miam | wouf |
-| sqdqs | sqdq |
+Je ne sais pas ce que c'est :/ Et je ne trouve pas de source :/
+
+///////////////////////////////////////////////////////
 
 ### 4. Faire des commits atomiques correctement commentés et des PR de taille humaine
 
-Le principe des commits atomiques est de commit son code dès qu'il n'y a plus d'erreur une fois qu'on a ajouté une fonction, ou un bout de code. De cette façon, si on est confronté à une erreur, on peut facilement remonté à partir de quel bout de code ça nous pose problème.
+Le principe des commits atomiques est de commit son code dès qu'il n'y a plus d'erreur une fois qu'on a ajouté une fonction, ou un bout de code. De cette façon, si on est confronté à une erreur, on peut facilement remonter à partir de quel bout de code ça nous pose problème.
 Il faut veiller à bien commenter nos commits afin de comprendre ce qui a été ajouté comme code.
 
 -----------------------
@@ -294,7 +292,7 @@ function salutation(name) {
 }
 
 function processUserInput(callback) {
-  var name = prompt('Entrez votre nom.');
+  const name = prompt('Entrez votre nom.');
   callback(name);
 }
 
@@ -303,7 +301,7 @@ processUserInput(salutation);
 
 4) closure
 
-Les closure font références au scope d'une fonction. Un scope est le bloc entre les {} de la fonction. Une variable assignée dans un scope ne pourra pas être utilisée à l'extèrieur de celle-ci. ???????????????????????
+Les closure font références au scope d'une fonction. Un scope est le bloc entre les {} de la fonction. Une variable assignée dans un scope ne pourra pas être utilisée à l'extèrieur de celle-ci. 
 
 ### 3. Maîtrise des événements utilisateurs VanillaJS
 
@@ -319,8 +317,6 @@ _Exemple_ :
 <p>This example uses the addEventListener() method to attach a click event to a button.</p>
 
 <button id="myBtn">Try it</button>
-
-<p><strong>Note:</strong> The addEventListener() method is not supported in Internet Explorer 8 and earlier versions.</p>
 
 <p id="demo"></p>
 <script>
@@ -424,7 +420,137 @@ C'est un outil qui analyse statiquement du code et vérifie que celui-ci respect
 
 ## REACT
 
-### 1. Utiliser JSX
+### 1. Créer un composant sous forme de classe
+
+```javascript
+import React, { Component } from 'react';
+
+class example extends Component {
+  render() {
+    return <h2>Hi, I am an example!</h2>;
+  }
+}
+
+export default example;
+```
+
+Le composant class permet de créer des composant servant à alimenter la page internet en codant en JSX.
+
+### 2. Créer un formulaire
+
+J'ai essayé de synthétisé la doc React mais bon, tout est dit ^^
+
+https://fr.reactjs.org/docs/forms.html
+
+### 3. Le cycle de vie d'un composant
+
+#### a) La méthode componentDidMount()
+
+Comme son nom l'indique, cette méthode est appelée une fois que tous les éléments de la page sont rendus correctement. Une fois le balisage défini sur la page. Cette méthode est appelée par React lui-même, soit pour récupérer les données depuis une API externe, soit pour effectuer des opérations uniques qui nécessitent des éléments JSX.
+
+La méthode componentDidMount() est l'endroit parfait pour appeler la méthode setState() afin de changer l'état de l'application tandis que render() se charge des données JSX mise à jour. Par exemple, si nous récupérons toutes les données d'une API, alors l'appel à l'API doit être placé dans cette méthode du cycle de vie. Une fois la réponse obtenue, nous pouvons appeler la méthode setState() et rendre l'élément avec les données mises à jour.
+
+```javascript
+import React, { Component } from 'react';
+
+class App extends Component {
+
+  constructor(props){
+    super(props);
+    this.state = {
+      data: 'Jordan Belfort'
+    }
+  }
+
+  getData(){
+    setTimeout(() => {
+      console.log('Our data is fetched');
+      this.setState({
+        data: 'Hello WallStreet'
+      })
+    }, 1000)
+  }
+
+  componentDidMount(){
+    this.getData();
+  }
+
+  render() {
+    return(
+      <div>
+      {this.state.data}
+    </div>
+    )
+  }
+}
+
+export default App;
+```
+Dans l'exemple ci-dessus on simule un appel à une API via la fonction setTimeOut puis je récupère les données. Une fois le composant rendu correctement, la fonction componentDidMount() est appelée qui enchaine l'appel à la fonction getData().
+
+#### b) La méthode componentWillMount()
+
+La méthode componentWillMount() est la méthode de cycle de vie la moins utilisée, elle est appelée avant que tout élément HTML soit rendu. Si vous voulez voir un aperçu, jetez un coup d'oeil à l'exemple précédent, il suffit d'ajouter une méthode de plus :
+
+```javascript
+import React, { Component } from 'react';
+
+class App extends Component {
+
+  constructor(props){
+    super(props);
+    this.state = {
+      data: 'Jordan Belfort'
+    }
+  }
+  componentWillMount(){
+    console.log('First this called');
+  }
+
+  getData(){
+    setTimeout(() => {
+      console.log('Our data is fetched');
+      this.setState({
+        data: 'Hello WallStreet'
+      })
+    }, 1000)
+  }
+
+  componentDidMount(){
+    this.getData();
+  }
+
+  render() {
+    return(
+      <div>
+      {this.state.data}
+    </div>
+    )
+  }
+}
+
+export default App;
+```
+Si on regarde attentivement la sortie console, il est d'abord affiché "First this called" et ensuite notre état initial est défini, puis la méthode render() est appelée, ensuite la méthode componentDidMount() est appelée pour qu'enfin les données nouvellement récupérées soient affichées dans le composant.
+
+#### c) Le componentDidUpdate
+
+componentDidUpdate() est appelée immédiatement après que la mise à jour a eu lieu. Cette méthode n’est pas appelée pour le rendu initial.
+
+Elle donne l’opportunité de travailler sur le DOM une fois que le composant a été mis à jour. C’est aussi un bon endroit pour faire des requêtes réseau, du moment qu'on prend soin de vérifier que les props actuelles concernées diffèrent des anciennes props (dans le sens où une requête réseau est peut-être superflue si les props en question n’ont pas changé).
+
+```javascript
+componentDidUpdate(prevProps) {
+  // Utilisation classique (pensez bien à comparer les props) :
+  if (this.props.userID !== prevProps.userID) {
+    this.fetchData(this.props.userID);
+  }
+}
+```
+
+On peut appeler setState() directement dans componentDidUpdate() mais il faut bien noter qu'il faut l’enrober dans une condition, comme dans l’exemple ci-dessus, ou on obtient l’équivalent d’une boucle infinie. Là aussi, on déclenche un rendu supplémentaire qui, même s’il n’est pas perceptible par l’utilisateur, peut affecter la performance du composant.
+
+### 4. Utiliser JSX
 
 Le JSX est une syntaxe nous permettant de mélanger du javascript et du XML dans le même code.
 Il y a quelques différences à noter avec le HTML :
@@ -472,8 +598,131 @@ const DonutPreferences = ({ likesDonuts }) => (
 ```
 Cette expression ne va pas fonctionner. Il faut d'abord créer une fonction avec cette condition. Puis on l'appelle dans les {}.
 
+### 5. Consommer une API
 
-### 2. Savoir implanter un routing
+L'appel à une API doit se faire obligatoirement dans le componentDidMount. De cette façon, on pourra y utiliser setState pour mettre à jour le composant lorsque les données seront récupérées.
+
+On peut consommer une API en utilisant Axios de la bibliotèque AJAX.
+Voici le github associé : https://github.com/axios/axios
+
+Le composant ci-dessous montre comment faire un appel AJAX dans componentDidMount pour peupler l’état local d’un composant.
+
+Dans l’exemple, l’API renvoie un objet JSON avec la structure suivante :
+
+```json
+{
+  "items": [
+    { "id": 1, "name": "Apples",  "price": "$2" },
+    { "id": 2, "name": "Peaches", "price": "$5" }
+  ]
+}
+```
+
+```javascript
+class MyComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      error: null,
+      isLoaded: false,
+      items: []
+    };
+  }
+
+  componentDidMount() {
+    fetch("https://api.example.com/items")
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.setState({
+            isLoaded: true,
+            items: result.items
+          });
+        },
+        // Remarque : il est important de traiter les erreurs ici
+        // au lieu d'utiliser un bloc catch(), pour ne pas passer à la trappe
+        // des exceptions provenant de réels bugs du composant.
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error
+          });
+        }
+      )
+  }
+
+  render() {
+    const { error, isLoaded, items } = this.state;
+    if (error) {
+      return <div>Erreur : {error.message}</div>;
+    } else if (!isLoaded) {
+      return <div>Chargement…</div>;
+    } else {
+      return (
+        <ul>
+          {items.map(item => (
+            <li key={item.name}>
+              {item.name} {item.price}
+            </li>
+          ))}
+        </ul>
+      );
+    }
+  }
+}
+```
+Voici l’équivalent avec les Hooks :
+
+```javascript
+function MyComponent() {
+  const [error, setError] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [items, setItems] = useState([]);
+
+  // Remarque : le tableau vide de dépendances [] indique
+  // que useEffect ne s’exécutera qu’une fois, un peu comme
+  // componentDidMount()
+  useEffect(() => {
+    fetch("https://api.example.com/items")
+      .then(res => res.json())
+      .then(
+        (result) => {
+          setIsLoaded(true);
+          setItems(result.items);
+        },
+        // Remarque : il faut gérer les erreurs ici plutôt que dans
+        // un bloc catch() afin que nous n’avalions pas les exceptions
+        // dues à de véritables bugs dans les composants.
+        (error) => {
+          setIsLoaded(true);
+          setError(error);
+        }
+      )
+  }, [])
+
+  if (error) {
+    return <div>Erreur : {error.message}</div>;
+  } else if (!isLoaded) {
+    return <div>Chargement...</div>;
+  } else {
+    return (
+      <ul>
+        {items.map(item => (
+          <li key={item.name}>
+            {item.name} {item.price}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+}
+```
+
+### 6. Déployer mon application
+
+
+
+### 6. Savoir implanter un routing
 
 Le routing permet de simuler un changement de page sur l'appli internet. 
 ```javascript
@@ -535,7 +784,7 @@ Ensuite, on appelle notre composant sur chaque élément de notre menu de naviga
 Pour aller plus loin, on peut utiliser **NavLink** pour customiser les liens, ajouter des classes, etc ... Pour cela, on a juste à remplacer tous les "Link" par "NavLink".
 pour plus d'info : https://reacttraining.com/react-router/core/api/Router
 
-### 3. Communiquer entre les Composants (props, event emits ...)
+### 7. Communiquer entre les Composants (props, event emits ...)
 
 1) Les Props
 
@@ -608,7 +857,7 @@ Les event permettent à l'utilisateur d'intéragir avec le site.
 - On peut utiliser l'attribut ```onMouseEnter``` afin de lier un évènement de souris passant sur un lien (sans cliquer) à une fonction du composant qui a la charge de mettre à jour l’état par la méthode setState.
 - On peut utiliser l'attribut ```onMouseLeave``` afin de lier un évènement de souris sortant d'un lien (sans cliquer) à une fonction du composant qui a la charge de mettre à jour l’état par la méthode setState.
 
-### 4. Utiliser l'affichage conditionnel en JSX
+### 8. Utiliser l'affichage conditionnel en JSX
 
 On peut faire un affichage conditionnel via un opérateur ternaire :
 
@@ -639,11 +888,11 @@ const App = () => {
 La fonction ```hasError()``` est vérifiée. Si elle est vraie, ce qui suit le && est affiché. Sinon, c'est ignoré.
 
 
-### 5. Afficher une liste de composants avec map
+### 9. Afficher une liste de composants avec map
 
 map permet de filtrer un tableau ou un objet et d'en lister les composants si on les sort dans une liste à puce via ```<li>```
 
-### 6. Le State
+### 10. Le State
 
 1. Contexte :
 
@@ -702,7 +951,12 @@ Il est impossible de modifier **this.state** directement, ni un de ses attributs
 
 > Dans cet exemple, il serait impossible d'écrire _this.state.count += 1_.
 
----
+### 11. Utiliser les hooks
+
+
+
+
+-------------------------------------------------------
 
 ## Méthodologie Agile : Scrum 
 
