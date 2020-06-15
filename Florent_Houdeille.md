@@ -953,7 +953,33 @@ Il est impossible de modifier **this.state** directement, ni un de ses attributs
 
 ### 11. Utiliser les hooks
 
+Les Hooks permettent de gérer autrement le state. La particularité c'est que le composant du Hooks (le ``` useState ``` ), est appelé dans une fonction. On lui attribut un état local qui représente l'initialisation du state ( ``` this.state ``` en temps normal).
 
+Voici un cas concret :
+
+```javascript
+import React, { useState } from 'react';
+
+function Example() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>Vous avez cliqué {count} fois</p>
+      <button onClick={() => setCount(count + 1)}>
+        Cliquez ici
+      </button>
+    </div>
+  );
+}
+```
+Nous avons ici un compteur.
+
+- Les variables __count__ et __setCount__ sont initialisées à 0 avec le useState.
+- Dans le return, la variable __count__ sert à afficher le nombre de fois que l'utilisateur a cliqué sur le bouton qui suit.
+- On attribue une fonction anonyme à la variable __setCount__ pour exécuter la commande comprise dans la parenthèse.
+
+On peut également déclarer plusieurs variables d'états
 
 
 -------------------------------------------------------
