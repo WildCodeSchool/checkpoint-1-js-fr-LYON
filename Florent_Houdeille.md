@@ -979,7 +979,44 @@ Nous avons ici un compteur.
 - Dans le return, la variable __count__ sert à afficher le nombre de fois que l'utilisateur a cliqué sur le bouton qui suit.
 - On attribue une fonction anonyme à la variable __setCount__ pour exécuter la commande comprise dans la parenthèse.
 
-On peut également déclarer plusieurs variables d'états
+On peut également déclarer plusieurs variables d'états.
+
+Ce que nous venons de voir concerne les Hook d'état.
+Il existe aussi des Hooks d'effets.
+
+Ils agissent comme le ferait le ```componentDidMount```, le ```componentDidUpdate``` et le ```componentWillUnmount``` en gérant les effets de bord.
+Il n'y a pas d'initialisation comme avec le useState. Par exemple avec le compteur :
+
+```javascript
+import React, { useState, useEffect } from 'react';
+
+function Example() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    document.title = `Vous avez cliqué ${count} fois`;
+  });
+
+  return (
+    <div>
+      <p>Vous avez cliqué {count} fois</p>
+      <button onClick={() => setCount(count + 1)}>
+        Cliquez ici
+      </button>
+    </div>
+  );
+}
+```
+Le ```useEffect``` va modifier le titre du fichier à chaque mise à jour du programme.
+
+On peut également faire passer une fonction dans le ```useEffect```.
+
+Tout est détaillé sur cette page : https://fr.reactjs.org/docs/hooks-overview.html
+
+Les Hooks possèdent quelques règles :
+
+* Les Hooks ne peuvent être appelés qu'au niveau racine. C'est à dire sans indentation dans le fichier.
+* Les Hooks ne peuvent être appelés que dans les composant __REACT__.
 
 
 -------------------------------------------------------
